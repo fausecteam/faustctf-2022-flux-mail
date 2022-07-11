@@ -1,0 +1,11 @@
+[Unit]
+Description=FAUST CTF flux mail service
+
+[Socket]
+ListenStream=4242
+Accept=true
+NoDelay=true
+MaxConnections=120
+
+[Install]
+WantedBy=faustctf.target

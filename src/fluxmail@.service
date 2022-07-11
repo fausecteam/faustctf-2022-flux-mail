@@ -1,0 +1,17 @@
+[Unit]
+Description=FAUST CTF flux mail service
+
+[Service]
+ExecStart=-/usr/bin/stdbuf -o0 /srv/fluxmail/fluxmail
+WorkingDirectory=/srv/fluxmail
+StandardInput=socket
+StandardOutput=socket
+User=fluxmail
+Restart=on-failure
+
+LimitNPROC=240
+LimitCPU=60
+PrivateTmp=true
+TemporaryFileSystem=/:ro
+BindPaths=/srv/fluxmail/
+BindReadOnlyPaths=/bin /lib /lib64 /usr /dev

@@ -1,0 +1,31 @@
+# Human-readable name of the service
+name: Flux Mail
+# Name of the service for usage in paths, usernames etc.: Should only consist of lowercase alphanumeric
+# characters, must be identical to the (URL) project name of the GitLab repo
+slug: flux-mail
+authors:
+  - olmeke <marius.fleischer@fau.de>
+
+install:
+  debian_packages:
+    - build-essential
+  # These will be run on the Vulnbox after extracting "dist_root" (from the build) to the root file system,
+  # installing Debian packages and creating the service user
+  postinst_commands:
+    - adduser --system --uid=81 --group --disabled-login --home /srv/fluxmail --no-create-home --gecos "fluxmail service user,,," fluxmail
+    - chown -R fluxmail:fluxmail /srv/fluxmail
+    - chmod -R 750 /srv/fluxmail
+    - install -o fluxmail -g fluxmail -m 700 -d "/srv/fluxmail/data/"
+    - systemctl enable fluxmail.socket
+  # Whether to insert a firewall rule not allowing the service user to establish outgoing network connections
+  # This should generally be enabled, except for services which need outgoing connections
+  prevent_outgoing_connections: True
+
+checker:
+  script_path: checker/checker.py
+  # Upper bound of how long the Checker Script takes to run (for a single team)
+  # Used for scheduling checks within a tick, executions taking longer *may* get terminated
+  max_duration: 60
+  debian_packages:
+    - python3-requests
+  pip_packages: []
